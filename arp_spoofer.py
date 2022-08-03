@@ -106,7 +106,7 @@ def createRestorePacket(target1, target2):
 
 
 # Function to restore the default ARP tables from the targets
-def restoreArpTables(target1, target2):
+def restoreARPTables(target1, target2):
     restore_packet1 = createRestorePacket(target1, target2)
     restore_packet2 = createRestorePacket(target2, target1)
     scapy.send(restore_packet1, count=4, verbose=False)
@@ -133,7 +133,7 @@ def spoofTargets(malicious_packet1, malicious_packet2, packets_per_sec, old_targ
         print("\n\nDetected CTRL + C from the user. Stopping the spoofing!")
         restore = helper.checkStringYesOrNo("Restore the previous ARP tables from the targets? [Y/n] > ", "Y")
         if restore == "Y":
-            restoreArpTables(old_targets_ip_mac[0], old_targets_ip_mac[1])
+            restoreARPTables(old_targets_ip_mac[0], old_targets_ip_mac[1])
         else:
             print("ARP tables not restored.")
             print("Quitting the script...")

@@ -142,7 +142,7 @@ def createRestorePacket(target1, target2):
 
 
 # Function to restore the default ARP tables from the targets
-def restoreArpTables(target1, target2):
+def restoreARPTables(target1, target2):
     # Creating an packet to restore the ARP table of the first target
     restore_packet1 = createRestorePacket(target1, target2)
     # Creating an packet to restore the ARP table of the second target
@@ -188,7 +188,7 @@ def spoofTargets(malicious_packet1, malicious_packet2, packets_per_sec, old_targ
         # If the user choose to restore the target's ARP tables
         if restore == "Y":
             # Passing the both targets IP and MAC that were stored at the beginning of the script
-            restoreArpTables(old_targets_ip_mac[0], old_targets_ip_mac[1])
+            restoreARPTables(old_targets_ip_mac[0], old_targets_ip_mac[1])
         # If the user choose to not restore the targets's ARP tables
         else:
             print("ARP tables not restored.")
