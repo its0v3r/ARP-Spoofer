@@ -1,4 +1,4 @@
-# Python ARP Spoofer 1.0.0
+# ARP Spoofer 1.0.0
 
 ## What is this script?
 
